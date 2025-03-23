@@ -12,6 +12,7 @@ import { Button, IconButton, Snackbar, Stack } from "@mui/material";
 import AddCar from "./AddCar";
 import EditCar from "./EditCar";
 import DeleteIcon from "@mui/icons-material/Delete";
+import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 
 type CarlistProps = {
   logOut?: () => void;
@@ -97,7 +98,10 @@ function Carlist({ logOut }: CarlistProps) {
     <>
       <Stack direction="row" alignItems="center" justifyContent="space-between">
         <AddCar />
-        <Button onClick={logOut}>Log out</Button>
+        <IconButton size="small" onClick={logOut}>
+          <ExitToAppIcon />
+          Log out
+        </IconButton>
       </Stack>
       <DataGrid
         rows={data}
