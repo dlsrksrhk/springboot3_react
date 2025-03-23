@@ -6,6 +6,7 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogTitle from "@mui/material/DialogTitle";
 import CarDialogContent from "./CarDialogContent";
 import { Car } from "../types";
+import { Button } from "@mui/material";
 
 function AddCar() {
   const queryClient = useQueryClient();
@@ -56,13 +57,13 @@ function AddCar() {
 
   return (
     <>
-      <button onClick={handleClickOpen}>New Car</button>
+      <Button onClick={handleClickOpen}>New Car</Button>
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>New car</DialogTitle>
         <CarDialogContent car={car} handleChange={handleChange} />
         <DialogActions>
-          <button onClick={handleClose}>Cancel</button>
-          <button onClick={handleSave}>Save</button>
+          <Button onClick={handleClose}>Cancel</Button>
+          <Button onClick={handleSave}>Save</Button>
         </DialogActions>
       </Dialog>
     </>

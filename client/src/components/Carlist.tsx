@@ -8,9 +8,10 @@ import {
   GridToolbar,
 } from "@mui/x-data-grid";
 import { useState } from "react";
-import { Snackbar } from "@mui/material";
+import { IconButton, Snackbar } from "@mui/material";
 import AddCar from "./AddCar";
 import EditCar from "./EditCar";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 function Carlist() {
   const [open, setOpen] = useState(false);
@@ -57,7 +58,9 @@ function Carlist() {
       filterable: false,
       disableColumnMenu: true,
       renderCell: (params: GridCellParams) => (
-        <button
+        <IconButton
+          aria-label="delete"
+          size="small"
           onClick={() => {
             if (
               window.confirm(
@@ -68,8 +71,8 @@ function Carlist() {
             }
           }}
         >
-          Delete
-        </button>
+          <DeleteIcon fontSize="small" />
+        </IconButton>
       ),
     },
   ];
