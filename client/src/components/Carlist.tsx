@@ -1,21 +1,30 @@
 //App.tsx
-import { useQuery } from "@tanstack/react-query";
-import { getCars } from "../api/carapi";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { deleteCar, getCars } from "../api/carapi";
 import { DataGrid, GridCellParams, GridColDef } from "@mui/x-data-grid";
+import { useState } from "react";
+import { Snackbar } from "@mui/material";
 
 function Carlist() {
-  const { data, error, isSuccess } = useQuery({
+  const [open, setOpen] = useState(false);
+  const queryClient = useQueryClient();
+
+  const { data, error, isLoading, isSuccess } = useQuery({
     queryKey: ['cars'],
     queryFn: getCars,
   });
 
-  if (!isSuccess) {
-    return <span>Loading...</span>;
-  }
+  const { mutate } = useMutation(deleteCar, {
+    onSuccess: () => {
+      //삭제 처리 이후 콜백
+      setOpen(true);
+      queryClient.invalidateQueries({ queryKey: ['cars'] });
+    },
+    onError: (err) => {
+      console.error(err);
+    },
+  });
 
-  if (error) {
-    return <span>Error when fetching cars...</span>;
-  }
 
   //그리드 컬럼 메타 데이터 정의
   const columns: GridColDef[] = [
@@ -34,7 +43,9 @@ function Carlist() {
       disableColumnMenu: true,
       renderCell: (params: GridCellParams) => (
         <button onClick={() => {
-          alert(`Delete ${params.row._links.self.href}`);
+          if (window.confirm(`Are you sure you want to delete ${params.row.brand} ${params.row.model}?`)) {
+            mutate(params.row._links.car.href);
+          }
         }}>
           Delete
         </button>
@@ -42,8 +53,23 @@ function Carlist() {
     },
   ];
 
+  if (!isSuccess) {
+    return <span>Loading...</span>;
+  }
+
+  if (error) {
+    return <span>Error when fetching cars...</span>;
+  }
+
+  if (isLoading) {
+    return <span>Loading...</span>
+  }
+
   return (
-    <DataGrid rows={data} columns={columns} getRowId={(row) => row._links.self.href} />
+    <>
+      <DataGrid rows={data} columns={columns} disableRowSelectionOnClick={true} getRowId={(row) => row._links.self.href} />
+      <Snackbar open={open} autoHideDuration={2000} onClose={() => setOpen(false)} message="Car deleted" />
+    </>
   );
 }
 
